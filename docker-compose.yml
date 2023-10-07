@@ -1,0 +1,43 @@
+version: "1.0"
+services:
+  reserva: # servicio de reserva
+    image: ferfsc/bnb-reservas:1.6
+    ports:
+      - 32034:80
+    networks:
+      - bnb-nur-net   
+    volumes:
+      - reserva-data:/app
+    # deploy:
+    #   replicas: 3
+    #   update_config:
+    #     parallelism: 2
+      
+    healthcheck:
+      test: curl --fail http://localhost:32034 || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  pagos: # servicio de pagos
+    image: minenurdocker/bnb-pagos:1.0
+    ports:
+      - 32035:80
+    networks:
+      - bnb-nur-net 
+    volumes:
+      - pagos-data:/app
+    # deploy:
+    #   replicas: 3
+    #   update_config:
+    #     parallelism: 2
+      
+    healthcheck:
+      test: curl --fail http://localhost:32035 || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+volumes:
+  reserva-data:
+  pagos-data:
+networks:
+  bnb-nur-net:
